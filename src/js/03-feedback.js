@@ -2,14 +2,12 @@ import throttle from 'lodash.throttle';
 import storage from './localstorage';
 
 const formEl = document.querySelector('.feedback-form');
-
-let feedbackFormInfo = {};
-const dataFromStorage = storage.load('feedback-form-state');
+let feedbackFormInfo = storage.load('feedback-form-state') || {};
 
 const fillFormFields = () => {
-  if (dataFromStorage) {
-    for (const key in dataFromStorage) {
-      formEl.elements[key].value = dataFromStorage[key];
+  if (feedbackFormInfo) {
+    for (const key in feedbackFormInfo) {
+      formEl.elements[key].value = feedbackFormInfo[key];
     }
   } else return;
 };
@@ -26,6 +24,10 @@ function onFormFieldTypeText(event) {
 
 function onFormFieldSubmit(event) {
   event.preventDefault();
+
+  if (formEl.email.value === '' || formEl.message.value === '') {
+    return alert('All form fields must be filled!');
+  }
   console.log(feedbackFormInfo);
 
   event.target.reset();
